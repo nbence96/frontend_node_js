@@ -1,0 +1,4 @@
+node_modules/
+source-directory/
+destination-directory/
+backup_log.txt
