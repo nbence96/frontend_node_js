@@ -7,16 +7,10 @@ const LOG_FILE = 'backup_log.txt';
 
 const getTimestamp = (): string => new Date().toISOString().replace(/[:.]/g, '-');
 
-/**
- * Calculates a SHA-256 checksum for the top-level contents of a directory.
- *
- * @param directory - The directory whose top-level entries are hashed.
- * @returns {Promise<string>} The SHA-256 hash of the sorted entries.
- */
 const calculateDirectoryChecksum = async (directory: string): Promise<string> => {
     try {
         const entries = await fs.readdir(directory);
-        entries.sort(); // Ensure consistent order
+        entries.sort();
         return crypto.createHash('sha256').update(entries.join(','), 'utf8').digest('hex');
     } catch (error) {
         console.log(`Error reading directory ${directory}:`, error);
@@ -33,7 +27,6 @@ const readLastBackupHash = async (): Promise<string | null> => {
             if (match) return match[1];
         }
     } catch (error: unknown) {
-        // Cast error to NodeJS.ErrnoException to safely access error.code
         const err = error as NodeJS.ErrnoException;
         if (err.code !== 'ErrNoEntry') {
             console.log('Error reading log file:', error);
